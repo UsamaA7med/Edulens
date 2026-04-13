@@ -5,6 +5,8 @@ import type { NextFunction, Request, Response } from 'express'
 import type GenerateError from './utils/generateError.js'
 import { connectToMongoDB } from './database/connectToMongoDB.js'
 import authRouter from './routes/auth.routes.js'
+import questionRouter from './routes/question.routes.js'
+import teacherProtectedMiddleware from './middleware/teacherProtected.middleware.js'
 
 dotenv.config()
 
@@ -18,6 +20,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', authRouter)
+app.use('/api/teacher/question', teacherProtectedMiddleware, questionRouter)
 
 app.use(
   (err: GenerateError, req: Request, res: Response, next: NextFunction) => {

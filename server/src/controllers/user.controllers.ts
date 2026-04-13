@@ -32,7 +32,7 @@ export const signup = asyncMiddleware(
       role,
     })
     generateAndSetToken(
-      { userId: user._id.toString(), role: user.role, email: user.email },
+      { id: user._id.toString(), role: user.role, email: user.email },
       req,
       res
     )
@@ -60,7 +60,7 @@ export const login = asyncMiddleware(
       return next(new GenerateError('Invalid email or password', 400, 'error'))
     }
     generateAndSetToken(
-      { userId: user._id.toString(), role: user.role, email: user.email },
+      { id: user._id.toString(), role: user.role, email: user.email },
       req,
       res
     )
@@ -78,6 +78,22 @@ export const logout = asyncMiddleware(
     res.status(200).json({
       status: 'success',
       message: 'User logged out successfully',
+    })
+  }
+)
+
+export const checkAuth = asyncMiddleware(
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return next(new GenerateError('Unauthorized', 401, 'error'))
+    }
+    const user = await UserModel.findById(req.user.id).select('-password')
+    if (!user) {
+      return next(new GenerateError('Unauthorized', 401, 'error'))
+    }
+    res.status(200).json({
+      status: 'success',
+      data: user,
     })
   }
 )

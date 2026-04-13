@@ -1,16 +1,13 @@
 import type { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
-
-dotenv.config()
 
 export const generateAndSetToken = (
-  { userId, role, email }: { userId: string; role: string; email: string },
+  { id, role, email }: { id: string; role: string; email: string },
   req: Request,
   res: Response
 ) => {
-  const token = jwt.sign({ userId, role, email }, process.env.JWT_SECRET!, {
-    expiresIn: '1d',
+  const token = jwt.sign({ id, role, email }, process.env.JWT_SECRET!, {
+    expiresIn: '7d',
   })
 
   res.cookie('token', token, {
