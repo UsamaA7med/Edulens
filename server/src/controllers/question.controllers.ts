@@ -22,10 +22,10 @@ export const createQuestion = asyncMiddleware(
     const teacher = req.user?.id as string
     const createdOptions = await OptionModel.insertMany(options)
     const optionsIds = createdOptions.map((option) => option._id)
-    if (req.file) {
-      const image = req.file
+    if (req.body.image) {
+      const image = req.body.image
       const { url, public_id } = await cloudinaryUploadImage(image)
-      const createdQuestion = await QuestionModel.create({
+      await QuestionModel.create({
         question,
         options: optionsIds,
         teacher,
@@ -35,27 +35,29 @@ export const createQuestion = asyncMiddleware(
           public_id,
         },
       })
+      const teacherQuestions = await QuestionModel.find({
+        teacher,
+      }).populate('options')
 
-      const populatedQuestion = await QuestionModel.findById(
-        createdQuestion._id
-      ).populate('options')
       res.status(201).json({
         status: 'success',
-        data: populatedQuestion,
+        message: 'Question created successfully',
+        data: teacherQuestions,
       })
     } else {
-      const createdQuestion = await QuestionModel.create({
+      await QuestionModel.create({
         question,
         options: optionsIds,
         difficulty,
         teacher,
       })
-      const populatedQuestion = await QuestionModel.findById(
-        createdQuestion._id
-      ).populate('options')
+      const teacherQuestions = await QuestionModel.find({
+        teacher,
+      }).populate('options')
       res.status(201).json({
         status: 'success',
-        data: populatedQuestion,
+        message: 'Question created successfully',
+        data: teacherQuestions,
       })
     }
   }
@@ -111,17 +113,15 @@ export const updateQuestion = asyncMiddleware(
     if (!existingQuestion) {
       return next(new GenerateError('Question not found', 404, 'error'))
     }
-    options?.forEach(async (option) => {
-      await OptionModel.findByIdAndUpdate(option.id, {
-        text: option.text,
-        isCorrect: option.isCorrect,
-      })
-    })
-    if (req.file) {
+    const updatedOptions = await OptionModel.updateMany(
+      { _id: { $in: existingQuestion.options } },
+      { $set: { option: options } }
+    )
+    if (req.body.image) {
       if (existingQuestion.image && existingQuestion.image.public_id) {
         await cloudinaryDeleteImage(existingQuestion.image.public_id)
       }
-      const image = req.file
+      const image = req.body.image
       const { url, public_id } = await cloudinaryUploadImage(image)
       existingQuestion.image = {
         url,

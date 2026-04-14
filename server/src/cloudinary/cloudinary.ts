@@ -14,17 +14,9 @@ interface UploadedFile {
   mimetype: string
 }
 
-const cloudinaryUploadImage = async (file: UploadedFile) => {
+const cloudinaryUploadImage = async (url: string) => {
   try {
-    const base64 = file.buffer.toString('base64')
-    const dataURI = `data:${file.mimetype};base64,${base64}`
-
-    const isImage = file.mimetype.startsWith('image/')
-    if (!isImage) {
-      throw new Error('File is not an image')
-    }
-    const uploaded = await cloudinary.uploader.upload(dataURI)
-
+    const uploaded = await cloudinary.uploader.upload(url)
     return {
       url: uploaded.secure_url,
       public_id: uploaded.public_id,

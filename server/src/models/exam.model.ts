@@ -2,18 +2,15 @@ import mongoose from 'mongoose'
 
 const examSchema = new mongoose.Schema(
   {
+    examTitle: {
+      type: String,
+      required: true,
+    },
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    questions: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Question',
-        required: true,
-      },
-    ],
     forms: [
       {
         type: mongoose.Schema.Types.ObjectId,

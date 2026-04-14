@@ -2,16 +2,14 @@ import { z } from 'zod'
 
 const createQuestionSchema = z.object({
   question: z.string().min(1, 'Question is required'),
-  options: z
-    .array(
-      z.object({
-        text: z.string().min(1, 'Option text is required'),
-        isCorrect: z.boolean().optional(),
-      })
-    )
-    .min(4, 'four options are required')
-    .max(4, 'only four options are allowed'),
+  options: z.array(
+    z.object({
+      text: z.string().min(1, 'Option text is required'),
+      isCorrect: z.boolean(),
+    })
+  ),
   difficulty: z.enum(['easy', 'medium', 'hard']),
+  image: z.string().optional(),
 })
 
 const updateQuestionSchema = z.object({
@@ -19,13 +17,15 @@ const updateQuestionSchema = z.object({
   options: z
     .array(
       z.object({
-        id: z.string(),
+        _id: z.string(),
         text: z.string().min(1, 'Option text is required'),
         isCorrect: z.boolean(),
       })
     )
     .optional(),
   difficulty: z.enum(['easy', 'medium', 'hard']).optional(),
+  correctOption: z.string().min(1, 'Correct option is required').optional(),
+  image: z.string().optional(),
 })
 
 type TUpdateQuestion = z.infer<typeof updateQuestionSchema>

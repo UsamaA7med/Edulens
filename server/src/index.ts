@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import type { NextFunction, Request, Response } from 'express'
 import type GenerateError from './utils/generateError.js'
 import { connectToMongoDB } from './database/connectToMongoDB.js'
@@ -12,8 +13,16 @@ dotenv.config()
 
 const app = express()
 
-app.use(express.json())
+app.use(
+  cors({
+    origin: process.env.VITE_FRONTEND_URL,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
+  })
+)
+
 app.use(cookieParser())
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('Hello osama!')
