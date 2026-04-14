@@ -13,8 +13,12 @@ import {
 } from '@/validations/user.validations'
 import { Field, FieldError, FieldLabel } from '../ui/field'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
+import useUser from '@/store/useUser'
+import { Spinner } from '../ui/spinner'
+import toast from 'react-hot-toast'
 
 export function RegisterForm() {
+  const { register, isLoading } = useUser()
   const form = useForm<TCreateUser>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
@@ -26,8 +30,17 @@ export function RegisterForm() {
     },
   })
 
-  const onSubmit: SubmitHandler<TCreateUser> = (data) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<TCreateUser> = async (data) => {
+    try {
+      const res = await register(data)
+      if (res.success) {
+        toast.success(res.message)
+      } else {
+        toast.error(res.message)
+      }
+    } catch (error) {
+      console.error('An error occurred while registering the user.')
+    }
   }
   return (
     <Card className="w-full max-w-sm ">
@@ -151,8 +164,15 @@ export function RegisterForm() {
           />
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Create Account
+          <Button type="submit" disabled={isLoading} className="w-full">
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Spinner />
+                Creating Account...
+              </div>
+            ) : (
+              'Create Account'
+            )}
           </Button>
           <div>
             <p>

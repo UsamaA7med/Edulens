@@ -10,8 +10,12 @@ import {
   type TLoginUser,
 } from '@/validations/user.validations'
 import { Field, FieldError, FieldLabel } from '../ui/field'
+import useUser from '@/store/useUser'
+import toast from 'react-hot-toast'
+import { Spinner } from '../ui/spinner'
 
 export function LoginForm() {
+  const { login, isLoading } = useUser()
   const form = useForm<TLoginUser>({
     resolver: zodResolver(loginUserSchema),
     defaultValues: {
@@ -20,8 +24,17 @@ export function LoginForm() {
     },
   })
 
-  const onSubmit: SubmitHandler<TLoginUser> = (data) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<TLoginUser> = async (data) => {
+    try {
+      const res = await login(data)
+      if (res.success) {
+        toast.success(res.message)
+      } else {
+        toast.error(res.message)
+      }
+    } catch (error) {
+      console.error('An error occurred while registering the user.')
+    }
   }
   return (
     <Card className="w-full max-w-sm ">
@@ -81,8 +94,15 @@ export function LoginForm() {
           />
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" disabled={isLoading} className="w-full">
+            {isLoading ? (
+              <>
+                <Spinner />
+                Logining...
+              </>
+            ) : (
+              'Login'
+            )}
           </Button>
           <div>
             <p>

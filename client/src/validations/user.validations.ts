@@ -30,7 +30,6 @@ const loginUserSchema = z.object({
   password: z
     .string()
     .min(6, { message: 'Password must be at least 6 characters' }),
-  role: z.enum(['student', 'teacher'], { message: 'Please select a role' }),
 })
 
 type TCreateUser = z.infer<typeof createUserSchema>

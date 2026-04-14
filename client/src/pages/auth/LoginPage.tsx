@@ -1,5 +1,5 @@
-import WelcomeAnimation from '@/assets/lottie/WelcomeAnimation'
 import { LoginForm } from '@/components/auth/LoginForm'
+import WelcomeAnimation from '@/components/lottie/WelcomeAnimation'
 
 const LoginPage = () => {
   return (

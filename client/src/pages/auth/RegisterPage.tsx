@@ -1,5 +1,5 @@
-import QuizeModeAnimation from '@/assets/lottie/QuizeModeAnimation'
 import { RegisterForm } from '@/components/auth/RegisterForm'
+import QuizeModeAnimation from '@/components/lottie/QuizeModeAnimation'
 
 const RegisterPage = () => {
   return (
