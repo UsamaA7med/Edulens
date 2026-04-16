@@ -3,7 +3,6 @@ import { MdOutlineDashboard } from 'react-icons/md'
 import { GoBook } from 'react-icons/go'
 import { LuFileSpreadsheet } from 'react-icons/lu'
 import { IoIosStats } from 'react-icons/io'
-import { TbDownload } from 'react-icons/tb'
 
 export const teacherSidebarItems = [
   {
