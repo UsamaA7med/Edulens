@@ -74,7 +74,12 @@ export const login = asyncMiddleware(
 
 export const logout = asyncMiddleware(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.clearCookie('token')
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    })
     res.status(200).json({
       status: 'success',
       message: 'User logged out successfully',
