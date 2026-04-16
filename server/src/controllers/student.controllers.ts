@@ -4,7 +4,6 @@ import redis from '../lib/upstachRedis.js'
 import ExamModel from '../models/exam.model.js'
 import GenerateError from '../utils/generateError.js'
 import FormModel from '../models/form.model.js'
-import OptionModel from '../models/option.model.js'
 import AttemptModel from '../models/attempt.model.js'
 
 type TExam = {
