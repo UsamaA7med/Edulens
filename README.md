@@ -22,7 +22,7 @@ Make sure you have the following installed:
 
 ```bash
 git clone https://github.com/UsamaA7med/Edulens.git
-cd exam-system
+cd Edulens
 ```
 
 ### 2. Install server dependencies
