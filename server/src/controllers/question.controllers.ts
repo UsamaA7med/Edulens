@@ -81,10 +81,13 @@ export const deleteQuestion = asyncMiddleware(
       await cloudinaryDeleteImage(question.image.public_id)
     }
     await OptionModel.deleteMany({ _id: { $in: question.options } })
-    await FormModel.updateMany(
-      { questions: { $in: [question._id] } },
-      { $pull: { questions: question._id } }
-    )
+    const formsContainingQuestion = await FormModel.find({
+      'questions.question': question._id,
+    })
+    const formsIds = formsContainingQuestion.map((form) => form._id)
+    await AttemptModel.deleteMany({ form: { $in: formsIds } })
+    await ExamModel.deleteMany({ forms: { $in: formsIds } })
+    await FormModel.deleteMany({ _id: { $in: formsIds } })
     await QuestionModel.findByIdAndDelete(id)
     const teacherQuestions = await QuestionModel.find({
       teacher: req.user?.id,
