@@ -16,20 +16,6 @@ import {
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { TbDownload } from 'react-icons/tb'
-const items = [
-  {
-    title: 'Average Score',
-    value: '68.0%',
-  },
-  {
-    title: 'Pass Rate',
-    value: '80%',
-  },
-  {
-    title: 'Avg. Time',
-    value: '21m 37s',
-  },
-]
 
 type TAttempt = {
   _id: string
@@ -45,6 +31,7 @@ type TAttempt = {
 }
 const TeacherResultsPage = () => {
   const [attempts, setAttempts] = useState<TAttempt[] | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const downloadCSV = async () => {
     const response = await axios.get(
@@ -62,6 +49,7 @@ const TeacherResultsPage = () => {
   }
   const getAttempts = async () => {
     try {
+      setIsLoading(true)
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/teacher/exam/attempts`,
         {
@@ -116,16 +104,6 @@ const TeacherResultsPage = () => {
             ))}
           </TableBody>
         </Table>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {items.map((item) => (
-          <Card key={item.title} className="border border-gray-200">
-            <CardHeader>
-              <CardTitle>{item.title}</CardTitle>
-              <CardDescription>{item.value}</CardDescription>
-            </CardHeader>
-          </Card>
-        ))}
       </div>
     </div>
   )
