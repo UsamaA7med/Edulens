@@ -45,7 +45,7 @@ const ExamCard = ({
             options
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-3 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {forms.map((form, idx) => (
             <FormDialog key={form._id} form={form} title={formTitles[idx]} />
           ))}

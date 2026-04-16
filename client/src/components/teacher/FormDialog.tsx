@@ -28,7 +28,7 @@ const FormDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="ml-auto">
+        <Button variant="outline" size={'lg'}>
           <LuEye className="text-primary" />
           {title}
         </Button>

@@ -3,6 +3,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import { Separator } from '../ui/separator'
 import { Button } from '../ui/button'
@@ -21,6 +22,13 @@ export function SideBar({
   const { logout } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
+  const { setOpenMobile } = useSidebar()
+
+  const handleNavigate = (href: string) => {
+    navigate(href)
+    setOpenMobile(false)
+  }
+
   const handleLogout = async () => {
     try {
       const res = await logout()
@@ -33,6 +41,7 @@ export function SideBar({
       console.error('An error occurred while logging out.')
     }
   }
+
   return (
     <Sidebar>
       <SidebarHeader className="p-5">
@@ -49,7 +58,7 @@ export function SideBar({
             size="lg"
             variant={location.pathname === item.href ? 'default' : 'outline'}
             className="hover:bg-primary hover:text-white flex justify-start duration-100 ease-in-out"
-            onClick={() => navigate(item.href)}
+            onClick={() => handleNavigate(item.href)}
           >
             {item.icon}
             <span className="ml-1">{item.label}</span>
