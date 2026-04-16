@@ -12,13 +12,14 @@ import {
 import useQuestion from '@/store/useQuestion'
 import toast from 'react-hot-toast'
 import { RiDeleteBin5Line } from 'react-icons/ri'
+import { Spinner } from '../ui/spinner'
 
 export function ConfirmDeleteQuestionDialog({
   questionId,
 }: {
   questionId: string
 }) {
-  const { deleteQuestion } = useQuestion()
+  const { deleteQuestion, isLoading } = useQuestion()
   const handelDeleteQuestion = async () => {
     try {
       const res = await deleteQuestion(questionId)
@@ -51,8 +52,22 @@ export function ConfirmDeleteQuestionDialog({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button variant="destructive" onClick={handelDeleteQuestion}>
-              Delete
+            <Button
+              variant="destructive"
+              disabled={isLoading}
+              onClick={handelDeleteQuestion}
+            >
+              {isLoading ? (
+                <>
+                  <Spinner />
+                  Deleting
+                </>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <RiDeleteBin5Line />
+                  Delete
+                </span>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

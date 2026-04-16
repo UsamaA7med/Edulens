@@ -2,13 +2,22 @@ import { SideBar } from '@/components/common/Sidebar'
 import { Separator } from '@/components/ui/separator'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { teacherSidebarItems } from '@/dummy'
+import useExam from '@/store/useExam'
+import useQuestion from '@/store/useQuestion'
 import useUser from '@/store/useUser'
+import { useEffect } from 'react'
 import { RiUser3Line } from 'react-icons/ri'
 
 import { Outlet } from 'react-router-dom'
 
 export default function TeacherLayout() {
   const { user } = useUser()
+  const { teacherQuestions } = useQuestion()
+  const { getTeacherExams } = useExam()
+  useEffect(() => {
+    teacherQuestions()
+    getTeacherExams()
+  }, [])
   return (
     <SidebarProvider>
       <SideBar sidebarItems={teacherSidebarItems} isTeacher={true} />

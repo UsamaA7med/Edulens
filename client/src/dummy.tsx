@@ -26,11 +26,6 @@ export const teacherSidebarItems = [
     href: '/teacher/results',
     icon: <IoIosStats size={20} />,
   },
-  {
-    label: 'Export',
-    href: '/teacher/export',
-    icon: <TbDownload size={20} />,
-  },
 ]
 
 export const studentSidebarItems = [

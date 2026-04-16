@@ -11,6 +11,10 @@ import {
 } from '../cloudinary/cloudinary.js'
 import QuestionModel from '../models/question.model.js'
 import OptionModel from '../models/option.model.js'
+import ExamModel from '../models/exam.model.js'
+import FormModel from '../models/form.model.js'
+import mongoose from 'mongoose'
+import AttemptModel from '../models/attempt.model.js'
 
 export const createQuestion = asyncMiddleware(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -77,6 +81,10 @@ export const deleteQuestion = asyncMiddleware(
       await cloudinaryDeleteImage(question.image.public_id)
     }
     await OptionModel.deleteMany({ _id: { $in: question.options } })
+    await FormModel.updateMany(
+      { questions: { $in: [question._id] } },
+      { $pull: { questions: question._id } }
+    )
     await QuestionModel.findByIdAndDelete(id)
     const teacherQuestions = await QuestionModel.find({
       teacher: req.user?.id,
@@ -138,6 +146,67 @@ export const updateQuestion = asyncMiddleware(
       status: 'success',
       message: 'Question updated successfully',
       data: teacherQuestions,
+    })
+  }
+)
+
+export const analytics = asyncMiddleware(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const teacherId = req.user?.id as string
+    const totalStudents = await AttemptModel.countDocuments({
+      teacher: new mongoose.Types.ObjectId(teacherId),
+    })
+    const TeacherAverageTime = await AttemptModel.aggregate([
+      {
+        $match: {
+          teacher: new mongoose.Types.ObjectId(teacherId),
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          averageTime: { $avg: '$timeTaken' },
+        },
+      },
+    ])
+    const totalQuestions = await QuestionModel.countDocuments({
+      teacher: new mongoose.Types.ObjectId(teacherId),
+    })
+    const questionAnalytics = await QuestionModel.aggregate([
+      {
+        $match: {
+          teacher: new mongoose.Types.ObjectId(teacherId),
+        },
+      },
+      {
+        $group: {
+          _id: '$difficulty',
+          count: { $sum: 1 },
+        },
+      },
+    ])
+    const numberOfExams = await ExamModel.aggregate([
+      {
+        $match: {
+          teacher: new mongoose.Types.ObjectId(teacherId),
+        },
+      },
+    ])
+    const analytics = {
+      questionAnalytics: {
+        easy: questionAnalytics.find((item) => item._id === 'easy')?.count || 0,
+        medium:
+          questionAnalytics.find((item) => item._id === 'medium')?.count || 0,
+        hard: questionAnalytics.find((item) => item._id === 'hard')?.count || 0,
+      },
+      numberOfExams: numberOfExams.length,
+      totalQuestions,
+      totalStudents,
+      averageTime: TeacherAverageTime[0]?.averageTime || 0,
+    }
+    res.status(200).json({
+      status: 'success',
+      data: analytics,
     })
   }
 )

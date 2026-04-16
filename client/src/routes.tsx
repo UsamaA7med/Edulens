@@ -7,10 +7,12 @@ import TeacherLayout from './layouts/TeacherLayout'
 import TeacherQuestionBank from './pages/teacher/TeacherQuestionBank'
 import TeacherExamsPage from './pages/teacher/TeacherExamsPage'
 import TeacherResultsPage from './pages/teacher/TeacherResultsPage'
-import TeacherExportPage from './pages/teacher/TeacherExportPage'
 import CheckAuth from './CheckAuth'
 import StudentLayout from './layouts/StudentLayout'
 import StudentDashboardPage from './pages/student/StudentDashboardPage'
+import StudentExamInfoPage from './pages/student/StudentExamInfoPage'
+import StudentExamPage from './pages/student/StudentExamPage'
+import StudentExamResultPage from './pages/student/StudentExamResultPage'
 
 const router = createBrowserRouter([
   {
@@ -59,10 +61,6 @@ const router = createBrowserRouter([
         path: 'results',
         element: <TeacherResultsPage />,
       },
-      {
-        path: 'export',
-        element: <TeacherExportPage />,
-      },
     ],
   },
   {
@@ -76,6 +74,18 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <StudentDashboardPage />,
+      },
+      {
+        path: 'examInfo/:id',
+        element: <StudentExamInfoPage />,
+      },
+      {
+        path: 'exam/:id',
+        element: <StudentExamPage />,
+      },
+      {
+        path: 'exam/result/:id',
+        element: <StudentExamResultPage />,
       },
     ],
   },

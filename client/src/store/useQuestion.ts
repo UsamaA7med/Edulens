@@ -37,17 +37,6 @@ const useQuestion = create<IQuestionStore>((set) => ({
   addQuestion: async (question) => {
     console.log(question)
     set({ isLoading: true })
-    // const formData = new FormData()
-    // formData.append('question', question.question)
-    // formData.append('difficulty', question.difficulty)
-    // formData.append('correctOption', question.correctOption)
-    // question.options.forEach((option) =>
-    //   formData.append(
-    //     'options',
-    //     JSON.stringify({ text: option.text, isCorrect: option.isCorrect })
-    //   )
-    // )
-    // if (question.image) formData.append('image', question.image)
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/teacher/question`,

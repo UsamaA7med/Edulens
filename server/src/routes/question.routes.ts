@@ -1,6 +1,7 @@
 import express from 'express'
 import upload from '../multer/multer.js'
 import {
+  analytics,
   createQuestion,
   deleteQuestion,
   teacherQuestions,
@@ -16,5 +17,7 @@ questionRouter.delete('/:id', deleteQuestion)
 questionRouter.get('/', teacherQuestions)
 
 questionRouter.patch('/:id', upload.single('image'), updateQuestion)
+
+questionRouter.get('/analytics', analytics)
 
 export default questionRouter

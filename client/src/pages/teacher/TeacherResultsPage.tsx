@@ -13,6 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { TbDownload } from 'react-icons/tb'
 const items = [
   {
@@ -28,7 +30,55 @@ const items = [
     value: '21m 37s',
   },
 ]
+
+type TAttempt = {
+  _id: string
+  timeTaken: string
+  score: number
+  student: {
+    fullName: string
+  }
+  status: string
+  exam: {
+    examTitle: string
+  }
+}
 const TeacherResultsPage = () => {
+  const [attempts, setAttempts] = useState<TAttempt[] | null>(null)
+
+  const downloadCSV = async () => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/teacher/exam/export-csv`,
+      { responseType: 'blob', withCredentials: true }
+    )
+
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'users.csv')
+    document.body.appendChild(link)
+    link.click()
+  }
+  const getAttempts = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/teacher/exam/attempts`,
+        {
+          withCredentials: true,
+        }
+      )
+      if (res.status === 200) {
+        setAttempts(res.data.data)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  useEffect(() => {
+    getAttempts()
+  }, [])
+  console.log(attempts)
   return (
     <div className="flex flex-col gap-10">
       <div className="flex items-center justify-between">
@@ -38,7 +88,7 @@ const TeacherResultsPage = () => {
             View and export student performance
           </p>
         </div>
-        <Button size="lg">
+        <Button size="lg" onClick={downloadCSV}>
           <TbDownload size={20} />
           Export to Excel
         </Button>
@@ -55,13 +105,13 @@ const TeacherResultsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
-            {[1, 2, 3, 4].map((question) => (
-              <TableRow key={question}>
-                <TableCell>Osama Ahmed</TableCell>
-                <TableCell>Mathematics</TableCell>
-                <TableCell>100</TableCell>
-                <TableCell>1:00:00</TableCell>
-                <TableCell>Pass</TableCell>
+            {attempts?.map((att) => (
+              <TableRow key={att._id}>
+                <TableCell>{att.student.fullName}</TableCell>
+                <TableCell>{att.exam.examTitle}</TableCell>
+                <TableCell>{att.score}</TableCell>
+                <TableCell>{att.timeTaken}</TableCell>
+                <TableCell>{att.status}</TableCell>
               </TableRow>
             ))}
           </TableBody>

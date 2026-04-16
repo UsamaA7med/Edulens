@@ -5,6 +5,20 @@ import { LuUsers } from 'react-icons/lu'
 import { FaRegClock } from 'react-icons/fa6'
 import { Progress } from '@/components/ui/progress'
 import { Field, FieldLabel } from '@/components/ui/field'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+
+type TAnalytics = {
+  questionAnalytics: {
+    easy: number
+    medium: number
+    hard: number
+  }
+  numberOfExams: number
+  totalQuestions: number
+  totalStudents: number
+  averageTime: number
+}
 
 const statistics = [
   {
@@ -46,6 +60,25 @@ const statistics = [
   },
 ]
 const TeacherDashboardPage = () => {
+  const [analytics, setAnalytics] = useState<TAnalytics | null>(null)
+  const getAnalytics = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/teacher/question/analytics`,
+        {
+          withCredentials: true,
+        }
+      )
+      if (res.status === 200) {
+        setAnalytics(res.data.data)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  useEffect(() => {
+    getAnalytics()
+  }, [])
   return (
     <div className="flex flex-col gap-10">
       <div>
@@ -77,23 +110,38 @@ const TeacherDashboardPage = () => {
           <Field className="w-full">
             <FieldLabel htmlFor="progress-upload">
               <span className="text-muted-foreground">Easy</span>
-              <span className="ml-auto">50</span>
+              <span className="ml-auto">
+                {analytics?.questionAnalytics.easy}
+              </span>
             </FieldLabel>
-            <Progress value={50} className="[&>div]:bg-green-600" />
+            <Progress
+              value={analytics?.questionAnalytics.easy}
+              className="[&>div]:bg-green-600"
+            />
           </Field>
           <Field className="w-full">
             <FieldLabel htmlFor="progress-upload">
               <span className="text-muted-foreground">Medium</span>
-              <span className="ml-auto">15</span>
+              <span className="ml-auto">
+                {analytics?.questionAnalytics.medium}
+              </span>
             </FieldLabel>
-            <Progress value={15} className="[&>div]:bg-yellow-600" />
+            <Progress
+              value={analytics?.questionAnalytics.medium}
+              className="[&>div]:bg-yellow-600"
+            />
           </Field>
           <Field className="w-full">
             <FieldLabel htmlFor="progress-upload">
               <span className="text-muted-foreground">Hard</span>
-              <span className="ml-auto">15</span>
+              <span className="ml-auto">
+                {analytics?.questionAnalytics.hard}
+              </span>
             </FieldLabel>
-            <Progress value={15} className="[&>div]:bg-red-600" />
+            <Progress
+              value={analytics?.questionAnalytics.hard}
+              className="[&>div]:bg-red-600"
+            />
           </Field>
         </CardContent>
       </Card>

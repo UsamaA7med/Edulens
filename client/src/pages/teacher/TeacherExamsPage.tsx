@@ -1,7 +1,10 @@
 import ExamCard from '@/components/teacher/ExamCard'
 import { GenerateExamDialog } from '@/components/teacher/GenerateExamDialog'
+import useExam from '@/store/useExam'
 
 const TeacherExamsPage = () => {
+  const { exams } = useExam()
+  console.log(exams)
   return (
     <div className="flex flex-col gap-10">
       <div className="flex items-center justify-between">
@@ -13,7 +16,17 @@ const TeacherExamsPage = () => {
         </div>
         <GenerateExamDialog />
       </div>
-      <ExamCard title="Example Exam" numberOfQuestions={10} duration={60} />
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        {exams?.map((exam) => (
+          <ExamCard
+            key={exam._id}
+            title={exam.examTitle}
+            numberOfQuestions={exam.forms[0].questions.length}
+            forms={exam.forms}
+            duration={exam.examDuration}
+          />
+        ))}
+      </div>
     </div>
   )
 }

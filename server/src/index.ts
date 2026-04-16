@@ -8,6 +8,10 @@ import { connectToMongoDB } from './database/connectToMongoDB.js'
 import authRouter from './routes/auth.routes.js'
 import questionRouter from './routes/question.routes.js'
 import teacherProtectedMiddleware from './middleware/teacherProtected.middleware.js'
+import examRouter from './routes/exam.routes.js'
+import redis from './lib/upstachRedis.js'
+import studentProtectedMiddleware from './middleware/studentProtected.middleware.js'
+import studentRouter from './routes/student.routes.js'
 
 dotenv.config()
 
@@ -25,11 +29,13 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('Hello osama!')
+  res.send('Hello World!')
 })
 
 app.use('/api/auth', authRouter)
 app.use('/api/teacher/question', teacherProtectedMiddleware, questionRouter)
+app.use('/api/teacher/exam', teacherProtectedMiddleware, examRouter)
+app.use('/api/student', studentProtectedMiddleware, studentRouter)
 
 app.use(
   (err: GenerateError, req: Request, res: Response, next: NextFunction) => {

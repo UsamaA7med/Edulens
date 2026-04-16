@@ -27,14 +27,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import useQuestion from '@/store/useQuestion'
-import { useEffect } from 'react'
 
 const TeacherQuestionBank = () => {
-  const { questions, teacherQuestions } = useQuestion()
-  useEffect(() => {
-    teacherQuestions()
-  }, [])
-  console.log(questions)
+  const { questions } = useQuestion()
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">

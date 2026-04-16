@@ -12,14 +12,40 @@ import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import { IoIosAdd } from 'react-icons/io'
 import { Field, FieldError, FieldLabel } from '../ui/field'
 import { Input } from '../ui/input'
-import { ScrollArea } from '../ui/scroll-area'
 import GenerateExamScrollArea from './GenerateExamScrollArea'
-import ExamCard from './ExamCard'
+import {
+  createExamSchema,
+  type TCreateExam,
+} from '@/validations/exam.validations'
+import useExam from '@/store/useExam'
+import toast from 'react-hot-toast'
+import { Spinner } from '../ui/spinner'
 
 export function GenerateExamDialog() {
+  const { createExam, isLoading } = useExam()
   const [open, setOpen] = useState(false)
-  const form = useForm()
-
+  const form = useForm({
+    resolver: zodResolver(createExamSchema),
+    defaultValues: {
+      examTitle: '',
+      examDuration: null,
+      questions: [],
+    },
+  })
+  const onSubmitData: SubmitHandler<TCreateExam> = async (data) => {
+    try {
+      const res = await createExam(data)
+      if (res.success) {
+        toast.success(res.message)
+        setOpen(false)
+        form.reset()
+      } else {
+        toast.error(res.message)
+      }
+    } catch (error) {
+      console.error('error while creating exam')
+    }
+  }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -34,9 +60,7 @@ export function GenerateExamDialog() {
         </DialogHeader>
         <div className="-mx-4 max-h-[50vh] overflow-y-auto px-4">
           <form
-            onSubmit={form.handleSubmit((data) => {
-              console.log(data)
-            })}
+            onSubmit={form.handleSubmit(onSubmitData)}
             className="flex flex-col gap-4"
           >
             <Controller
@@ -70,9 +94,12 @@ export function GenerateExamDialog() {
                   </FieldLabel>
                   <Input
                     {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
                     type="number"
+                    value={field.value ?? ''}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      field.onChange(val === '' ? null : Number(val))
+                    }}
                   />
                   {fieldState.invalid && (
                     <FieldError
@@ -83,9 +110,29 @@ export function GenerateExamDialog() {
                 </Field>
               )}
             />
-            <GenerateExamScrollArea />
-            <Button type="submit" size="lg">
-              Create Exam
+            <Controller
+              name="questions"
+              control={form.control}
+              render={({ field }) => (
+                <GenerateExamScrollArea
+                  value={field.value || []}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <Button
+              type="submit"
+              size="lg"
+              disabled={!form.formState.isValid || isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Spinner />
+                  <span>Creating Exam...</span>
+                </>
+              ) : (
+                'Create Exam'
+              )}
             </Button>
           </form>
         </div>

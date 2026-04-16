@@ -1,16 +1,31 @@
 import { Card, CardContent } from '../ui/card'
 import { LuFileSpreadsheet } from 'react-icons/lu'
-import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
-import { LuEye } from 'react-icons/lu'
-
+import FormDialog from './FormDialog'
+const formTitles = ['Form A', 'Form B', 'Form C', 'Form D']
 const ExamCard = ({
   title,
   numberOfQuestions,
   duration,
+  forms,
 }: {
   title: string
   numberOfQuestions: number
   duration: number
+  forms: {
+    questions: {
+      question: {
+        _id: string
+        question: string
+      }
+      options: {
+        _id: string
+        text: string
+        isCorrect: boolean
+      }[]
+    }[]
+
+    _id: string
+  }[]
 }) => {
   return (
     <Card>
@@ -30,31 +45,10 @@ const ExamCard = ({
             options
           </p>
         </div>
-        <div>
-          <ToggleGroup
-            type="single"
-            size="sm"
-            defaultValue="top"
-            variant="outline"
-            spacing={2}
-          >
-            <ToggleGroupItem value="formA">
-              <LuEye />
-              Form A
-            </ToggleGroupItem>
-            <ToggleGroupItem value="formB">
-              <LuEye />
-              Form B
-            </ToggleGroupItem>
-            <ToggleGroupItem value="formC">
-              <LuEye />
-              Form C
-            </ToggleGroupItem>
-            <ToggleGroupItem value="formD">
-              <LuEye />
-              Form D
-            </ToggleGroupItem>
-          </ToggleGroup>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {forms.map((form, idx) => (
+            <FormDialog key={form._id} form={form} title={formTitles[idx]} />
+          ))}
         </div>
       </CardContent>
     </Card>

@@ -7,11 +7,25 @@ const attemptSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    exam: {
+    teacher: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Exam',
+      ref: 'User',
       required: true,
     },
+    answers: [
+      {
+        question: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Question',
+          required: true,
+        },
+        answer: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Option',
+          required: true,
+        },
+      },
+    ],
     form: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Form',
@@ -22,8 +36,18 @@ const attemptSchema = new mongoose.Schema(
       default: 0,
     },
     timeTaken: {
-      type: Number,
-      default: 0,
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['passed', 'failed'],
+      required: true,
+    },
+    exam: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Exam',
+      required: true,
     },
   },
   {

@@ -6,7 +6,7 @@ import useUser from './store/useUser'
 const CheckAuth = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation()
   const { isAuthenticated, checkAuth, isCheckingAuth, user } = useUser()
-  console.log(isAuthenticated)
+
   useEffect(() => {
     checkAuth()
   }, [])
