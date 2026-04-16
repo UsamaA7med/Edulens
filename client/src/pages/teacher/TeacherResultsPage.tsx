@@ -1,11 +1,5 @@
 import { Button } from '@/components/ui/button'
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
   Table,
   TableBody,
   TableCell,
@@ -59,6 +53,7 @@ const TeacherResultsPage = () => {
       if (res.status === 200) {
         setAttempts(res.data.data)
       }
+      setIsLoading(false)
     } catch (error) {
       console.error(error)
     }
@@ -93,15 +88,23 @@ const TeacherResultsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
-            {attempts?.map((att) => (
-              <TableRow key={att._id}>
-                <TableCell>{att.student.fullName}</TableCell>
-                <TableCell>{att.exam.examTitle}</TableCell>
-                <TableCell>{att.score}</TableCell>
-                <TableCell>{att.timeTaken}</TableCell>
-                <TableCell>{att.status}</TableCell>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  <p>Loading...</p>
+                </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              attempts?.map((attempt) => (
+                <TableRow key={attempt._id}>
+                  <TableCell>{attempt.student.fullName}</TableCell>
+                  <TableCell>{attempt.exam.examTitle}</TableCell>
+                  <TableCell>{attempt.score}</TableCell>
+                  <TableCell>{attempt.timeTaken}</TableCell>
+                  <TableCell>{attempt.status}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
