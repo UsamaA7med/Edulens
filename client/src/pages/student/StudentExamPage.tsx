@@ -114,7 +114,7 @@ const StudentExamPage = () => {
   }, [currentSession])
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col gap-5 w-1/2">
+      <div className="flex flex-col gap-5 w-1/2 min-w-sm">
         <div className="flex justify-between items-center">
           <h1>{state?.examTitle}</h1>
           <Card>

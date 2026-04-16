@@ -2,7 +2,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { GoBook } from 'react-icons/go'
 import { LuFileSpreadsheet } from 'react-icons/lu'
 import { LuUsers } from 'react-icons/lu'
-import { FaRegClock } from 'react-icons/fa6'
 import { Progress } from '@/components/ui/progress'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { useEffect, useState } from 'react'
@@ -48,16 +47,6 @@ const statistics = [
       />
     ),
   },
-  {
-    label: 'Avg. Time',
-    value: '25m',
-    icon: (
-      <FaRegClock
-        size={40}
-        className="bg-gray-100 p-2 rounded-sm text-red-600"
-      />
-    ),
-  },
 ]
 const TeacherDashboardPage = () => {
   const [analytics, setAnalytics] = useState<TAnalytics | null>(null)
@@ -76,6 +65,9 @@ const TeacherDashboardPage = () => {
       console.error(error)
     }
   }
+  statistics[0].value = analytics?.totalQuestions || 0
+  statistics[1].value = analytics?.numberOfExams || 0
+  statistics[2].value = analytics?.totalStudents || 0
   useEffect(() => {
     getAnalytics()
   }, [])
@@ -88,7 +80,7 @@ const TeacherDashboardPage = () => {
             Overview of your examination system
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
           {statistics.map((stat) => (
             <Card key={stat.label} className="border border-gray-200">
               <CardContent>

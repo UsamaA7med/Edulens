@@ -33,7 +33,7 @@ const FormDialog = ({
           {title}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg -mx-4 max-h-[50vh] overflow-y-auto px-4">
         <DialogTitle>Preview: {title}</DialogTitle>
         <Separator />
         {form.questions.map((question, idx) => (

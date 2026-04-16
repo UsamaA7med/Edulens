@@ -54,7 +54,6 @@ export function EditQuestionDialog({
 }) {
   const { updateQuestion, isLoading } = useQuestion()
   const [open, setOpen] = useState(false)
-  console.log(question)
   const form = useForm<TUpdateQuestion>({
     resolver: zodResolver(updateQuestionSchema),
     defaultValues: {
@@ -67,7 +66,6 @@ export function EditQuestionDialog({
       image: '',
     },
   })
-  console.log('form errors', form.formState.errors)
 
   const handleOnSubmit: SubmitHandler<TUpdateQuestion> = async (data) => {
     console.log(data)

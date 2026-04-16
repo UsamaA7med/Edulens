@@ -5,20 +5,20 @@ import type {
 import axios, { isAxiosError } from 'axios'
 import { create } from 'zustand'
 
+export type TQuestion = {
+  _id: string
+  question: string
+  difficulty: 'easy' | 'medium' | 'hard'
+  options: {
+    _id: string
+    text: string
+    isCorrect: boolean
+  }[]
+  image: string
+}
+
 interface IQuestionStore {
-  questions:
-    | {
-        _id: string
-        question: string
-        difficulty: 'easy' | 'medium' | 'hard'
-        options: {
-          _id: string
-          text: string
-          isCorrect: boolean
-        }[]
-        image: string
-      }[]
-    | null
+  questions: TQuestion[] | null
   isLoading: boolean
   addQuestion: (
     question: TCreateQuestion

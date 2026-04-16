@@ -12,10 +12,10 @@ const StudentExamResultPage = () => {
   }, [id])
   return (
     <div className="flex flex-col justify-center items-center gap-5 ">
-      <div className="w-1/2">
+      <div className="w-1/2 min-w-sm">
         <ResultCard />
       </div>
-      <div className="w-1/2">
+      <div className="w-1/2 min-w-sm">
         <ResultDetailsCard />
       </div>
     </div>

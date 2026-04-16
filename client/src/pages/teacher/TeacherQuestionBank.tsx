@@ -26,10 +26,48 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import useQuestion from '@/store/useQuestion'
+import useQuestion, { type TQuestion } from '@/store/useQuestion'
+import { useEffect, useState } from 'react'
 
 const TeacherQuestionBank = () => {
   const { questions } = useQuestion()
+  const [filter, setFilter] = useState<{
+    difficulty: string
+    search: string
+  }>({
+    difficulty: 'all-difficulties',
+    search: '',
+  })
+  const [filteredQuestions, setFilteredQuestions] = useState<TQuestion[]>(
+    questions!
+  )
+  useEffect(() => {
+    setFilteredQuestions(questions!)
+  }, [questions])
+  const handelSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter({
+      ...filter,
+      search: e.target.value,
+    })
+    setFilteredQuestions(
+      questions?.filter((question) =>
+        question.question.toLowerCase().includes(e.target.value.toLowerCase())
+      )!
+    )
+  }
+  const handelDifficultyChange = (value: string) => {
+    setFilter({
+      ...filter,
+      difficulty: value,
+    })
+    if (value === 'all-difficulties') {
+      setFilteredQuestions(questions!)
+    } else {
+      setFilteredQuestions(
+        questions?.filter((question) => question.difficulty === value)!
+      )
+    }
+  }
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
@@ -49,9 +87,10 @@ const TeacherQuestionBank = () => {
           <InputGroupInput
             id="input-group-url"
             placeholder="Search questions..."
+            onChange={handelSearchChange}
           />
         </InputGroup>
-        <Select>
+        <Select onValueChange={handelDifficultyChange}>
           <SelectTrigger className="w-full max-w-48">
             <SelectValue
               placeholder="All Difficulties"
@@ -79,7 +118,7 @@ const TeacherQuestionBank = () => {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
-            {questions?.map((question) => (
+            {filteredQuestions?.map((question) => (
               <TableRow key={question._id}>
                 <TableCell className="w-4/6">{question.question}</TableCell>
                 <TableCell>

@@ -25,7 +25,7 @@ const StudentDashboardPage = () => {
                 <div className="flex w-full items-center justify-between gap-5">
                   <div className="flex flex-col gap-2">
                     <p className="text-lg">{exam.examTitle}</p>
-                    <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="flex  justify-start flex-col md:flex-row gap-2 text-muted-foreground">
                       <p className="flex gap-2 items-center">
                         <FiUser size={18} />
                         {exam.teacher.fullName}
