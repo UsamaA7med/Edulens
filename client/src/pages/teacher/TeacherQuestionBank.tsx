@@ -30,7 +30,7 @@ import useQuestion, { type TQuestion } from '@/store/useQuestion'
 import { useEffect, useState } from 'react'
 
 const TeacherQuestionBank = () => {
-  const { questions } = useQuestion()
+  const { questions, isLoading } = useQuestion()
   const [filter, setFilter] = useState<{
     difficulty: string
     search: string
@@ -118,12 +118,19 @@ const TeacherQuestionBank = () => {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
-            {filteredQuestions?.map((question) => (
-              <TableRow key={question._id}>
-                <TableCell className="w-4/6">{question.question}</TableCell>
-                <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  <p>Loading...</p>
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredQuestions?.map((question) => (
+                <TableRow key={question._id}>
+                  <TableCell className="w-4/6">{question.question}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium
                         ${
                           question.difficulty === 'easy'
                             ? 'text-green-600 bg-green-50'
@@ -131,19 +138,20 @@ const TeacherQuestionBank = () => {
                               ? 'text-yellow-600 bg-yellow-50'
                               : 'text-red-600 bg-red-50'
                         }`}
-                  >
-                    {question.difficulty}
-                  </span>
-                </TableCell>
-                <TableCell className="w-1/6 flex gap-2">
-                  <EditQuestionDialog
-                    questionId={question._id}
-                    question={question}
-                  />
-                  <ConfirmDeleteQuestionDialog questionId={question._id} />
-                </TableCell>
-              </TableRow>
-            ))}
+                    >
+                      {question.difficulty}
+                    </span>
+                  </TableCell>
+                  <TableCell className="w-1/6 flex gap-2">
+                    <EditQuestionDialog
+                      questionId={question._id}
+                      question={question}
+                    />
+                    <ConfirmDeleteQuestionDialog questionId={question._id} />
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
