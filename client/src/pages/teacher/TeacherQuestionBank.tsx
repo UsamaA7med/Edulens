@@ -30,7 +30,7 @@ import useQuestion, { type TQuestion } from '@/store/useQuestion'
 import { useEffect, useState } from 'react'
 
 const TeacherQuestionBank = () => {
-  const { questions, isLoading } = useQuestion()
+  const { questions, isLoadingQuestions } = useQuestion()
   const [filter, setFilter] = useState<{
     difficulty: string
     search: string
@@ -118,7 +118,7 @@ const TeacherQuestionBank = () => {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
-            {isLoading ? (
+            {isLoadingQuestions ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center">
                   <p>Loading...</p>

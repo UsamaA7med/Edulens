@@ -20,6 +20,7 @@ export type TQuestion = {
 interface IQuestionStore {
   questions: TQuestion[] | null
   isLoading: boolean
+  isLoadingQuestions: boolean
   addQuestion: (
     question: TCreateQuestion
   ) => Promise<{ success: boolean; message: string }>
@@ -34,8 +35,8 @@ interface IQuestionStore {
 const useQuestion = create<IQuestionStore>((set) => ({
   questions: null,
   isLoading: false,
+  isLoadingQuestions: false,
   addQuestion: async (question) => {
-    console.log(question)
     set({ isLoading: true })
     try {
       const res = await axios.post(
@@ -87,7 +88,7 @@ const useQuestion = create<IQuestionStore>((set) => ({
     }
   },
   teacherQuestions: async () => {
-    set({ isLoading: true })
+    set({ isLoadingQuestions: true })
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/teacher/question`,
@@ -101,7 +102,7 @@ const useQuestion = create<IQuestionStore>((set) => ({
     } catch (error) {
       console.log(error)
     } finally {
-      set({ isLoading: false })
+      set({ isLoadingQuestions: false })
     }
   },
   updateQuestion: async (id, question) => {
