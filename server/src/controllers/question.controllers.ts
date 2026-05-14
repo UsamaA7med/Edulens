@@ -124,14 +124,16 @@ export const updateQuestion = asyncMiddleware(
     if (!existingQuestion) {
       return next(new GenerateError('Question not found', 404, 'error'))
     }
-    await Promise.all(
-      options.map((opt: { _id: string; text: string }) =>
-        OptionModel.findByIdAndUpdate(
-          opt._id,
-          { $set: { text: opt.text } }
-        )
+    if (options && options.length > 0) {
+  await Promise.all(
+    options.map((opt: { _id: string; text: string }) =>
+      OptionModel.findByIdAndUpdate(
+        opt._id,
+        { $set: { text: opt.text } }
       )
     )
+  )
+}
     if (req.body.image) {
       if (existingQuestion.image && existingQuestion.image.public_id) {
         await cloudinaryDeleteImage(existingQuestion.image.public_id)
