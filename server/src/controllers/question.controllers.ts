@@ -124,12 +124,13 @@ export const updateQuestion = asyncMiddleware(
     if (!existingQuestion) {
       return next(new GenerateError('Question not found', 404, 'error'))
     }
-    const questionsIds = options.map(
-      (option: string) => new mongoose.Types.ObjectId(option)
-    )
-    const updatedOptions = await OptionModel.updateMany(
-      { _id: { $in: questionsIds } },
-      { $set: { option: options } }
+    await Promise.all(
+      options.map((opt: { _id: string; text: string }) =>
+        OptionModel.findByIdAndUpdate(
+          opt._id,
+          { $set: { text: opt.text } }
+        )
+      )
     )
     if (req.body.image) {
       if (existingQuestion.image && existingQuestion.image.public_id) {
