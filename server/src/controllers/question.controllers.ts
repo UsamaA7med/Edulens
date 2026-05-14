@@ -124,8 +124,11 @@ export const updateQuestion = asyncMiddleware(
     if (!existingQuestion) {
       return next(new GenerateError('Question not found', 404, 'error'))
     }
+    const questionsIds = options.map(
+      (option: string) => new mongoose.Types.ObjectId(option)
+    )
     const updatedOptions = await OptionModel.updateMany(
-      { _id: { $in: existingQuestion.options } },
+      { _id: { $in: questionsIds } },
       { $set: { option: options } }
     )
     if (req.body.image) {
