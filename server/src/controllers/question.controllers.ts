@@ -119,21 +119,34 @@ export const updateQuestion = asyncMiddleware(
     if (!isValidBody.success) {
       return next(new GenerateError('Invalid body', 400, 'error'))
     }
-    const { question, options, difficulty } = isValidBody.data
-    const existingQuestion = await QuestionModel.findById(id)
+    const { question, options, difficulty, correctOption } = isValidBody.data
+    const existingQuestion =
+      await QuestionModel.findById(id).populate('options')
     if (!existingQuestion) {
       return next(new GenerateError('Question not found', 404, 'error'))
     }
-    if (options && options.length > 0) {
-  await Promise.all(
-    options.map((opt: { _id: string; text: string }) =>
-      OptionModel.findByIdAndUpdate(
-        opt._id,
-        { $set: { text: opt.text } }
-      )
+    const idOfCorrectOption = existingQuestion.options.find(
+      (opt, idx) => idx === Number(correctOption)
     )
-  )
-}
+    if (idOfCorrectOption) {
+      existingQuestion.options.map(async (opt) => {
+        if (opt._id.toString() !== idOfCorrectOption._id.toString()) {
+          await OptionModel.findByIdAndUpdate(opt._id, {
+            $set: { isCorrect: false },
+          })
+        }
+      })
+      await OptionModel.findByIdAndUpdate(idOfCorrectOption._id, {
+        $set: { isCorrect: true },
+      })
+    }
+    if (options && options.length > 0) {
+      await Promise.all(
+        options.map((opt: { _id: string; text: string }) =>
+          OptionModel.findByIdAndUpdate(opt._id, { $set: { text: opt.text } })
+        )
+      )
+    }
     if (req.body.image) {
       if (existingQuestion.image && existingQuestion.image.public_id) {
         await cloudinaryDeleteImage(existingQuestion.image.public_id)
